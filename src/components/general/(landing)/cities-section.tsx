@@ -2,7 +2,7 @@ import Gravity, { MatterBody } from "@/components/fancy/physics/gravity"
 
 export default function CitiesGravitySection() {
   return (
-    <div className="w-dvw h-dvh flex flex-col relative font-azeret-mono bg-white">
+    <div className="w-dvw h-dvh flex flex-col relative font-azeret-mono">
       <div className="pt-20 text-6xl sm:text-7xl md:text-8xl text-foreground dark:text-muted w-full text-center font-calendas italic">
         {/* fancy */}
       </div>

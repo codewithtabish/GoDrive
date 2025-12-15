@@ -5,11 +5,12 @@ import { Logo } from "@/components/logo";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MobileNav } from "@/components/mobile-nav";
+import { ModeToggle } from "./general/mode-toggle";
 
 // Updated navigation links
 export const navLinks = [
-	{ label: "About", href: "#" },
-	{ label: "Team", href: "#" },
+	{ label: "About", href: "/about" },
+	// { label: "Team", href: "#" },
 	{ label: "Blogs", href: "#" },
 	{ label: "Contact Us", href: "#" },
 ];
@@ -48,6 +49,7 @@ export function Header() {
 							{link.label}
 						</a>
 					))}
+					<ModeToggle/>
 					<Button variant="outline">Sign In</Button>
 					<Button>Get Started</Button>
 				</div>

@@ -8,8 +8,8 @@ import { ArrowRightIcon, AtSignIcon } from "lucide-react";
 
 export function CallToAction() {
 	return (
-		<div className="relative mx-auto flex w-full max-w-3xl flex-col justify-between gap-y-6 border-x  px-2 py-8 md:px-4 dark:bg-secondary/40">
-			<div className="-translate-x-1/2 -top-px pointer-events-none absolute left-1/2 w-screen border-t" />
+		<div className="relative mx-auto flex w-full rounded-3xl max-w-3xl flex-col justify-between gap-y-6 border-x  px-2 py-8 md:px-4 dark:bg-secondary/10">
+			<div className="-translate-x-1/2 -top-px pointer-events-none absolute left-1/2 w-screen " />
 
 			<div className="space-y-1">
 				<h2 className="text-center font-semibold text-2xl tracking-tight md:text-4xl">
@@ -69,7 +69,7 @@ export function CallToAction() {
 				</div>
 			</div>
 
-			<div className="-translate-x-1/2 -bottom-px pointer-events-none absolute left-1/2 w-screen border-b" />
+			<div className="-translate-x-1/2 -bottom-px pointer-events-none absolute left-1/2 w-screen " />
 		</div>
 	);
 }

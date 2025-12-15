@@ -12,7 +12,7 @@ import { FeatureCard } from "@/components/feature-card";
 
 export default function FeatureSection() {
   return (
-    <section className="min-h-screen mt-12 place-content-center bg-gray-50 dark:bg-gray-900">
+    <section className="min-h-screen mt-12 place-content-center bg-gray-50 dark:bg-secondary/5">
       <div className="mx-auto w-full max-w-5xl space-y-8 p-4">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-balance font-medium text-2xl md:text-4xl lg:text-5xl">

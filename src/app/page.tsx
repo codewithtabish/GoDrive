@@ -27,7 +27,6 @@ const HomePage = () => {
       <FaqsSection/>
       </div>
 
-    <FooterSection/>    
       
     </div>
   )
