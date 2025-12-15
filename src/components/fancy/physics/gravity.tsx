@@ -26,7 +26,6 @@ import Matter, {
   Runner,
   World,
 } from "matter-js"
-
 import { cn } from "@/lib/utils"
 
 type GravityProps = {
@@ -65,11 +64,7 @@ export type GravityRef = {
 }
 
 const GravityContext = createContext<{
-  registerElement: (
-    id: string,
-    element: HTMLElement,
-    props: MatterBodyProps
-  ) => void
+  registerElement: (id: string, element: HTMLElement, props: MatterBodyProps) => void
   unregisterElement: (id: string) => void
 } | null>(null)
 
@@ -107,18 +102,13 @@ export const MatterBody = ({
       angle,
       ...props,
     })
-
     return () => context.unregisterElement(idRef.current)
   }, [props, children, matterBodyOptions, isDraggable])
 
   return (
     <div
       ref={elementRef}
-      className={cn(
-        "absolute",
-        className,
-        isDraggable && "pointer-events-auto"
-      )}
+      className={cn("absolute", className, isDraggable && "pointer-events-auto")}
     >
       {children}
     </div>
@@ -142,11 +132,11 @@ const Gravity = forwardRef<GravityRef, GravityProps>(
   ) => {
     const canvas = useRef<HTMLDivElement>(null)
     const engine = useRef(Engine.create())
-    const render = useRef<Render>(undefined)
-    const runner = useRef<Runner>(undefined)
+    const render = useRef<any>(0)
+    const runner = useRef<any>(0)
     const bodiesMap = useRef(new Map<string, PhysicsBody>())
-    const frameId = useRef<number>(undefined)
-    const mouseConstraint = useRef<Matter.MouseConstraint>(undefined)
+    const frameId = useRef<number>(0)
+    const mouseConstraint = useRef<Matter.MouseConstraint>(null)
     const mouseDown = useRef(false)
     const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 })
     const isRunning = useRef(false)
@@ -156,53 +146,36 @@ const Gravity = forwardRef<GravityRef, GravityProps>(
         if (!canvas.current) return
         const width = element.offsetWidth
         const height = element.offsetHeight
-        const canvasRect = canvas.current!.getBoundingClientRect()
+        const canvasRect = canvas.current.getBoundingClientRect()
         const angle = (props.angle || 0) * (Math.PI / 180)
         const x = calculatePosition(props.x, canvasRect.width, width)
         const y = calculatePosition(props.y, canvasRect.height, height)
 
         let body
+        const baseOptions = {
+          ...props.matterBodyOptions,
+          angle,
+          chamfer: props.matterBodyOptions?.chamfer ?? undefined,
+          render: {
+            fillStyle: debug ? "#888888" : "#00000000",
+            strokeStyle: debug ? "#333333" : "#00000000",
+            lineWidth: debug ? 3 : 0,
+          },
+        }
+
         if (props.bodyType === "circle") {
           const radius = Math.max(width, height) / 2
-          body = Bodies.circle(x, y, radius, {
-            ...props.matterBodyOptions,
-            angle,
-            render: {
-              fillStyle: debug ? "#888888" : "#00000000",
-              strokeStyle: debug ? "#333333" : "#00000000",
-              lineWidth: debug ? 3 : 0,
-            },
-          })
+          body = Bodies.circle(x, y, radius, baseOptions)
         } else if (props.bodyType === "svg") {
           const paths = element.querySelectorAll("path")
           const vertexSets: Matter.Vector[][] = []
-
           paths.forEach((path) => {
             const d = path.getAttribute("d")
-            const p = parsePathToVertices(d!, props.sampleLength)
-            vertexSets.push(p)
+            if (d) vertexSets.push(parsePathToVertices(d, props.sampleLength))
           })
-
-          body = Bodies.fromVertices(x, y, vertexSets, {
-            ...props.matterBodyOptions,
-            angle,
-            render: {
-              fillStyle: debug ? "#888888" : "#00000000",
-              strokeStyle: debug ? "#333333" : "#00000000",
-              lineWidth: debug ? 3 : 0,
-            },
-          })
-        } 
-        else {
-          body = Bodies.rectangle(x, y, width, height, {
-            ...props.matterBodyOptions,
-            angle,
-            render: {
-              fillStyle: debug ? "#888888" : "#00000000",
-              strokeStyle: debug ? "#333333" : "#00000000",
-              lineWidth: debug ? 3 : 0,
-            },
-          })
+          body = Bodies.fromVertices(x, y, vertexSets, baseOptions)
+        } else {
+          body = Bodies.rectangle(x, y, width, height, baseOptions)
         }
 
         if (body) {
@@ -225,32 +198,26 @@ const Gravity = forwardRef<GravityRef, GravityProps>(
       bodiesMap.current.forEach(({ element, body }) => {
         const { x, y } = body.position
         const rotation = body.angle * (180 / Math.PI)
-        element.style.transform = `translate(${
-          x - element.offsetWidth / 2
-        }px, ${y - element.offsetHeight / 2}px) rotate(${rotation}deg)`
+        element.style.transform = `translate(${x - element.offsetWidth / 2}px, ${
+          y - element.offsetHeight / 2
+        }px) rotate(${rotation}deg)`
       })
       frameId.current = requestAnimationFrame(updateElements)
     }, [])
 
     const initializeRenderer = useCallback(() => {
       if (!canvas.current) return
-      const height = canvas.current.offsetHeight
       const width = canvas.current.offsetWidth
+      const height = canvas.current.offsetHeight
 
       Common.setDecomp(require("poly-decomp"))
-
       engine.current.gravity.x = gravity.x
       engine.current.gravity.y = gravity.y
 
       render.current = Render.create({
         element: canvas.current,
         engine: engine.current,
-        options: {
-          width,
-          height,
-          wireframes: false,
-          background: "#00000000",
-        },
+        options: { width, height, wireframes: false, background: "#00000000" },
       })
 
       const mouse = Mouse.create(render.current.canvas)
@@ -259,7 +226,6 @@ const Gravity = forwardRef<GravityRef, GravityProps>(
         constraint: { stiffness: 0.2, render: { visible: debug } },
       })
 
-      // Add walls
       const walls = [
         Bodies.rectangle(width / 2, height + 10, width, 20, { isStatic: true, friction: 1, render: { visible: debug } }),
         Bodies.rectangle(width + 10, height / 2, 20, height, { isStatic: true, friction: 1, render: { visible: debug } }),
@@ -271,39 +237,18 @@ const Gravity = forwardRef<GravityRef, GravityProps>(
       }
 
       const touchingMouse = () =>
-        Query.point(
-          engine.current.world.bodies,
-          mouseConstraint.current?.mouse.position || { x: 0, y: 0 }
-        ).length > 0
+        Query.point(engine.current.world.bodies, mouseConstraint.current?.mouse.position || { x: 0, y: 0 }).length > 0
 
-      if (grabCursor) {
+      if (grabCursor && canvas.current) {
         Events.on(engine.current, "beforeUpdate", () => {
-          if (!canvas.current) return
-          if (!mouseDown.current && !touchingMouse()) {
-            canvas.current.style.cursor = "default"
-          } else if (touchingMouse()) {
-            canvas.current.style.cursor = mouseDown.current ? "grabbing" : "grab"
-          }
+          canvas.current && (canvas.current.style.cursor = !mouseDown.current && !touchingMouse() ? "default" : touchingMouse() ? (mouseDown.current ? "grabbing" : "grab") : "default")
         })
-
-        canvas.current.addEventListener("mousedown", () => {
-          mouseDown.current = true
-          if (touchingMouse()) canvas.current.style.cursor = "grabbing"
-        })
-
-        canvas.current.addEventListener("mouseup", () => {
-          mouseDown.current = false
-          if (touchingMouse()) canvas.current.style.cursor = "grab"
-        })
+        canvas.current.addEventListener("mousedown", () => (mouseDown.current = true))
+        canvas.current.addEventListener("mouseup", () => (mouseDown.current = false))
       }
 
-      // Let scrolling through page work naturally
       canvas.current.style.pointerEvents = "none"
-
-      // Enable physics dragging for individual MatterBody elements
-      bodiesMap.current.forEach(({ element }) => {
-        element.style.pointerEvents = "auto"
-      })
+      bodiesMap.current.forEach(({ element }) => (element.style.pointerEvents = "auto"))
 
       World.add(engine.current.world, [mouseConstraint.current, ...walls])
 
@@ -314,7 +259,7 @@ const Gravity = forwardRef<GravityRef, GravityProps>(
       runner.current.enabled = false
 
       if (autoStart) startEngine()
-    }, [updateElements, debug, autoStart])
+    }, [debug, autoStart, updateElements, gravity.x, gravity.y, addTopWall, grabCursor])
 
     const clearRenderer = useCallback(() => {
       if (frameId.current) cancelAnimationFrame(frameId.current)
@@ -365,11 +310,7 @@ const Gravity = forwardRef<GravityRef, GravityProps>(
       handleResize()
     }, [canvasSize.width, canvasSize.height, updateElements, handleResize])
 
-    useImperativeHandle(ref, () => ({ start: startEngine, stop: stopEngine, reset }), [
-      startEngine,
-      stopEngine,
-      reset,
-    ])
+    useImperativeHandle(ref, () => ({ start: startEngine, stop: stopEngine, reset }), [startEngine, stopEngine, reset])
 
     useEffect(() => {
       if (!resetOnResize) return
@@ -388,11 +329,7 @@ const Gravity = forwardRef<GravityRef, GravityProps>(
 
     return (
       <GravityContext.Provider value={{ registerElement, unregisterElement }}>
-        <div
-          ref={canvas}
-          className={cn(className, "absolute top-0 left-0 w-full h-full")}
-          {...props}
-        >
+        <div ref={canvas} className={cn(className, "absolute top-0 left-0 w-full h-full")} {...props}>
           {children}
         </div>
       </GravityContext.Provider>

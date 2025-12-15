@@ -239,9 +239,9 @@ export function HeroSection2() {
 
       <TriplePhoneHero
             // @ts-ignore
-  imageLeftSrc="https://res.cloudinary.com/harshitproject/image/upload/v1746774677/suno-left.png"
-        imageCenterSrc="https://res.cloudinary.com/harshitproject/image/upload/v1746774677/suno-center.png"
-        imageRightSrc="https://res.cloudinary.com/harshitproject/image/upload/v1746774678/suno-right.png"
+  imageLeftSrc={'/one.png'}
+        imageCenterSrc={'/two.png'}
+        imageRightSrc={'/three.png'}
       />
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white dark:from-[#212121] to-transparent z-40" />
