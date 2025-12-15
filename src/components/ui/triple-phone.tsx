@@ -1,396 +1,233 @@
-"use client"
+"use client";
 
-import {
-  createContext,
-  forwardRef,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from "react"
-import { calculatePosition } from "@/utils/calculate-position"
-import { parsePathToVertices } from "@/utils/svg-path-to-vertices"
-import { debounce } from "lodash"
-import Matter, {
-  Bodies,
-  Common,
-  Engine,
-  Events,
-  Mouse,
-  MouseConstraint,
-  Query,
-  Render,
-  Runner,
-  World,
-} from "matter-js"
+import React, { useRef } from "react";
+import { motion, useInView } from "motion/react";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
 
-import { cn } from "@/lib/utils"
-
-type GravityProps = {
-  children: ReactNode
-  debug?: boolean
-  gravity?: { x: number; y: number }
-  resetOnResize?: boolean
-  grabCursor?: boolean
-  addTopWall?: boolean
-  autoStart?: boolean
-  className?: string
+// Interface for the Iphone15Pro component props
+interface Iphone15ProProps extends React.SVGProps<SVGSVGElement> {
+  width?: string | number;
+  height?: string | number;
+  src?: string;
+  alt?: string;
 }
 
-type PhysicsBody = {
-  element: HTMLElement
-  body: Matter.Body
-  props: MatterBodyProps
-}
-
-type MatterBodyProps = {
-  children: ReactNode
-  matterBodyOptions?: Matter.IBodyDefinition
-  isDraggable?: boolean
-  bodyType?: "rectangle" | "circle" | "svg"
-  sampleLength?: number
-  x?: number | string
-  y?: number | string
-  angle?: number
-  className?: string
-}
-
-export type GravityRef = {
-  start: () => void
-  stop: () => void
-  reset: () => void
-}
-
-const GravityContext = createContext<{
-  registerElement: (id: string, element: HTMLElement, props: MatterBodyProps) => void
-  unregisterElement: (id: string) => void
-} | null>(null)
-
-export const MatterBody = ({
-  children,
+const Iphone15Pro: React.FC<Iphone15ProProps> = ({
+  width = "100%",
+  height = "auto",
+  src,
+  alt = "iPhone screen content",
   className,
-  matterBodyOptions = {
-    friction: 0.1,
-    restitution: 0.1,
-    density: 0.001,
-    isStatic: false,
-  },
-  bodyType = "rectangle",
-  isDraggable = true,
-  sampleLength = 15,
-  x = 0,
-  y = 0,
-  angle = 0,
   ...props
-}: MatterBodyProps) => {
-  const elementRef = useRef<HTMLDivElement>(null)
-  const idRef = useRef(Math.random().toString(36).substring(7))
-  const context = useContext(GravityContext)
+}) => {
+  return (
+    <div className={cn("relative", className)}>
+      <svg
+        width={width}
+        height={height}
+        viewBox="0 0 433 882"
+        preserveAspectRatio="xMidYMid meet"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="transition-all duration-500 ease-in-out"
+        {...props}
+      >
+        {/* Outer frame */}
+        <path
+          d="M2 73C2 32.6832 34.6832 0 75 0H357C397.317 0 430 32.6832 430 73V809C430 849.317 397.317 882 357 882H75C34.6832 882 2 849.317 2 809V73Z"
+          className="dark:fill-[#DADADA] fill-[#404040]"
+        />
+        {/* Side buttons */}
+        <path
+          d="M0 171C0 170.448 0.447715 170 1 170H3V204H1C0.447715 204 0 203.552 0 203V171Z"
+          className="dark:fill-[#DADADA] fill-[#404040]"
+        />
+        <path
+          d="M1 234C1 233.448 1.44772 233 2 233H3.5V300H2C1.44772 300 1 299.552 1 299V234Z"
+          className="dark:fill-[#DADADA] fill-[#404040]"
+        />
+        <path
+          d="M1 319C1 318.448 1.44772 318 2 318H3.5V385H2C1.44772 385 1 384.552 1 384V319Z"
+          className="dark:fill-[#DADADA] fill-[#404040]"
+        />
+        <path
+          d="M430 279H432C432.552 279 433 279.448 433 280V384C433 384.552 432.552 385 432 385H430V279Z"
+          className="dark:fill-[#DADADA] fill-[#404040]"
+        />
 
-  useEffect(() => {
-    if (!elementRef.current || !context) return
-    context.registerElement(idRef.current, elementRef.current, {
-      children,
-      matterBodyOptions,
-      bodyType,
-      sampleLength,
-      isDraggable,
-      x,
-      y,
-      angle,
-      ...props,
-    })
-    return () => context.unregisterElement(idRef.current)
-  }, [props, children, matterBodyOptions, isDraggable])
+        {/* Inner body */}
+        <path
+          d="M6 74C6 35.3401 37.3401 4 76 4H356C394.66 4 426 35.3401 426 74V808C426 846.66 394.66 878 356 878H76C37.3401 878 6 846.66 6 808V74Z"
+          className="fill-[#262626] dark:fill-black" // Simplified dark mode fill
+        />
+
+        {/* Top speaker grille */}
+        <path
+          opacity="0.5"
+          d="M174 5H258V5.5C258 6.60457 257.105 7.5 256 7.5H176C174.895 7.5 174 6.60457 174 5.5V5Z"
+          className="dark:fill-[#DADADA] fill-[#404040]"
+        />
+
+        {/* Screen area */}
+        <path
+          d="M21.25 75C21.25 44.2101 46.2101 19.25 77 19.25H355C385.79 19.25 410.75 44.2101 410.75 75V807C410.75 837.79 385.79 862.75 355 862.75H77C46.2101 862.75 21.25 837.79 21.25 807V75Z"
+          className="fill-[#111] dark:fill-[#F5F5F5]" // Screen background
+        />
+
+        {/* Screen Content Area */}
+        {src && (
+          <foreignObject
+            x="21.25"
+            y="19.25"
+            width="389.5"
+            height="843.5"
+            clipPath="url(#roundedCorners)"
+          >
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: "55.75px",
+                overflow: "hidden",
+                position: "relative",
+                backgroundColor: "#111",
+              }}
+              className="dark:bg-[#F5F5F5]"
+            >
+              <Image
+                src={src}
+                alt={alt}
+                fill
+                style={{ objectFit: "cover" }}
+                sizes="(max-width: 768px) 80vw, (max-width: 1200px) 50vw, 33vw"
+                priority
+              />
+            </div>
+          </foreignObject>
+        )}
+
+        {/* Notch area */}
+        <path
+          d="M154 48.5C154 38.2827 162.283 30 172.5 30H259.5C269.717 30 278 38.2827 278 48.5C278 58.7173 269.717 67 259.5 67H172.5C162.283 67 154 58.7173 154 48.5Z"
+          className="fill-[#262626] dark:fill-[#F0F0F0]"
+        />
+        {/* Inner Notch Elements */}
+        <path
+          d="M249 48.5C249 42.701 253.701 38 259.5 38C265.299 38 270 42.701 270 48.5C270 54.299 265.299 59 259.5 59C253.701 59 249 54.299 249 48.5Z"
+          className="fill-[#111] dark:fill-[#D1D1D1]" // Slightly darker for contrast
+        />
+        <path
+          d="M254 48.5C254 45.4624 256.462 43 259.5 43C262.538 43 265 45.4624 265 48.5C265 51.5376 262.538 54 259.5 54C256.462 54 254 51.5376 254 48.5Z"
+          className="fill-white/30 dark:fill-black" // Even darker for the lens appearance
+        />
+
+        <defs>
+          <clipPath id="roundedCorners">
+            <rect
+              x="21.25"
+              y="19.25"
+              width="389.5"
+              height="843.5"
+              rx="55.75"
+              ry="55.75"
+            />
+          </clipPath>
+        </defs>
+      </svg>
+    </div>
+  );
+};
+
+interface TriplePhoneHeroProps {
+  imageLeftSrc: string;
+  imageLeftAlt?: string;
+  imageCenterSrc: string;
+  imageCenterAlt?: string;
+  imageRightSrc: string;
+  imageRightAlt?: string;
+}
+
+const TriplePhoneHero: React.FC<TriplePhoneHeroProps> = ({
+  imageLeftSrc,
+  imageLeftAlt = "Left phone screen content",
+  imageCenterSrc,
+  imageCenterAlt = "Center phone screen content",
+  imageRightSrc,
+  imageRightAlt = "Right phone screen content",
+}) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, {
+    once: true,
+    margin: "-30% 0px -30% 0px",
+  });
+
+  const common = { duration: 1.2, ease: [0.4, 0, 0.2, 1] };
+
+  const centerVariant = {
+    hidden: { opacity: 0, y: "60%", scale: 0.85 },
+    visible: {
+      opacity: 1,
+      y: "15%",
+      scale: 1,
+      transition: { ...common },
+    },
+  };
+  const side = (dir: "left" | "right") => ({
+    hidden: { opacity: 0, y: "65%", x: "0%", rotate: 0, scale: 0.85 },
+    visible: {
+      opacity: 0.8,
+      y: "25%",
+      x: dir === "left" ? "-50%" : "50%",
+      rotate: dir === "left" ? -10 : 10,
+      scale: 1,
+      transition: { ...common, delay: 0.15 },
+    },
+  });
 
   return (
     <div
-      ref={elementRef}
-      className={cn("absolute", className, isDraggable && "pointer-events-auto")}
+      ref={containerRef}
+      className="relative flex min-h-[600px] w-full items-center justify-center"
     >
-      {children}
-    </div>
-  )
-}
-
-const Gravity = forwardRef<GravityRef, GravityProps>(
-  (
-    {
-      children,
-      debug = false,
-      gravity = { x: 0, y: 1 },
-      grabCursor = true,
-      resetOnResize = true,
-      addTopWall = true,
-      autoStart = true,
-      className,
-      ...props
-    },
-    ref
-  ) => {
-    const canvas = useRef<HTMLDivElement>(null)
-    const engine = useRef(Engine.create())
-    const render = useRef<Matter.Render | null>(null)
-    const runner = useRef<Matter.Runner | null>(null)
-    const bodiesMap = useRef(new Map<string, PhysicsBody>())
-    const frameId = useRef<number | null>(null)
-    const mouseConstraint = useRef<Matter.MouseConstraint | null>(null)
-    const mouseDown = useRef(false)
-    const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 })
-    const isRunning = useRef(false)
-
-    const registerElement = useCallback(
-      (id: string, element: HTMLElement, props: MatterBodyProps) => {
-        if (!canvas.current) return
-        const width = element.offsetWidth
-        const height = element.offsetHeight
-        const canvasRect = canvas.current!.getBoundingClientRect()
-        const angle = (props.angle || 0) * (Math.PI / 180)
-        const x = calculatePosition(props.x, canvasRect.width, width)
-        const y = calculatePosition(props.y, canvasRect.height, height)
-
-        let body: Matter.Body | undefined
-        if (props.bodyType === "circle") {
-          const radius = Math.max(width, height) / 2
-          body = Bodies.circle(x, y, radius, {
-            ...props.matterBodyOptions,
-            angle,
-            chamfer: props.matterBodyOptions?.chamfer ?? undefined,
-            render: {
-              fillStyle: debug ? "#888888" : "#00000000",
-              strokeStyle: debug ? "#333333" : "#00000000",
-              lineWidth: debug ? 3 : 0,
-            },
-          })
-        } else if (props.bodyType === "svg") {
-          const paths = element.querySelectorAll("path")
-          const vertexSets: Matter.Vector[][] = []
-          paths.forEach((path) => {
-            const d = path.getAttribute("d")
-            const p = parsePathToVertices(d!, props.sampleLength)
-            vertexSets.push(p)
-          })
-          body = Bodies.fromVertices(x, y, vertexSets, {
-            ...props.matterBodyOptions,
-            angle,
-            chamfer: props.matterBodyOptions?.chamfer ?? undefined,
-            render: {
-              fillStyle: debug ? "#888888" : "#00000000",
-              strokeStyle: debug ? "#333333" : "#00000000",
-              lineWidth: debug ? 3 : 0,
-            },
-          })
-        } else {
-          body = Bodies.rectangle(x, y, width, height, {
-            ...props.matterBodyOptions,
-            angle,
-            chamfer: props.matterBodyOptions?.chamfer ?? undefined,
-            render: {
-              fillStyle: debug ? "#888888" : "#00000000",
-              strokeStyle: debug ? "#333333" : "#00000000",
-              lineWidth: debug ? 3 : 0,
-            },
-          })
-        }
-
-        if (body) {
-          World.add(engine.current.world, [body])
-          bodiesMap.current.set(id, { element, body, props })
-        }
-      },
-      [debug]
-    )
-
-    const unregisterElement = useCallback((id: string) => {
-      const body = bodiesMap.current.get(id)
-      if (body) {
-        World.remove(engine.current.world, body.body)
-        bodiesMap.current.delete(id)
-      }
-    }, [])
-
-    const updateElements = useCallback(() => {
-      bodiesMap.current.forEach(({ element, body }) => {
-        const { x, y } = body.position
-        const rotation = body.angle * (180 / Math.PI)
-        element.style.transform = `translate(${x - element.offsetWidth / 2}px, ${
-          y - element.offsetHeight / 2
-        }px) rotate(${rotation}deg)`
-      })
-      frameId.current = requestAnimationFrame(updateElements)
-    }, [])
-
-    const initializeRenderer = useCallback(() => {
-      if (!canvas.current) return
-      const height = canvas.current.offsetHeight
-      const width = canvas.current.offsetWidth
-
-      Common.setDecomp(require("poly-decomp"))
-
-      engine.current.gravity.x = gravity.x
-      engine.current.gravity.y = gravity.y
-
-      render.current = Render.create({
-        element: canvas.current,
-        engine: engine.current,
-        options: {
-          width,
-          height,
-          wireframes: false,
-          background: "#00000000",
-        },
-      })
-
-      const mouse = Mouse.create(render.current.canvas)
-      mouseConstraint.current = MouseConstraint.create(engine.current, {
-        mouse,
-        constraint: { stiffness: 0.2, render: { visible: debug } },
-      })
-
-      // Add walls
-      const walls = [
-        Bodies.rectangle(width / 2, height + 10, width, 20, { isStatic: true, friction: 1, render: { visible: debug } }),
-        Bodies.rectangle(width + 10, height / 2, 20, height, { isStatic: true, friction: 1, render: { visible: debug } }),
-        Bodies.rectangle(-10, height / 2, 20, height, { isStatic: true, friction: 1, render: { visible: debug } }),
-      ]
-
-      if (addTopWall) {
-        walls.push(Bodies.rectangle(width / 2, -10, width, 20, { isStatic: true, friction: 1, render: { visible: debug } }))
-      }
-
-      const touchingMouse = () =>
-        Query.point(
-          engine.current.world.bodies,
-          mouseConstraint.current?.mouse.position || { x: 0, y: 0 }
-        ).length > 0
-
-      if (grabCursor) {
-        Events.on(engine.current, "beforeUpdate", () => {
-          if (!canvas.current) return
-          if (!mouseDown.current && !touchingMouse()) {
-            canvas.current.style.cursor = "default"
-          } else if (touchingMouse()) {
-            canvas.current.style.cursor = mouseDown.current ? "grabbing" : "grab"
-          }
-        })
-
-        canvas.current.addEventListener("mousedown", () => {
-          mouseDown.current = true
-          // @ts-ignore
-          if (touchingMouse()) canvas.current.style.cursor = "grabbing"
-        })
-
-        canvas.current.addEventListener("mouseup", () => {
-          mouseDown.current = false
-                    // @ts-ignore
-
-          if (touchingMouse()) canvas.current.style.cursor = "grab"
-        })
-      }
-
-      canvas.current.style.pointerEvents = "none"
-      bodiesMap.current.forEach(({ element }) => {
-        element.style.pointerEvents = "auto"
-      })
-
-      World.add(engine.current.world, [mouseConstraint.current, ...walls])
-
-      render.current.mouse = mouse
-      runner.current = Runner.create()
-      Render.run(render.current)
-      updateElements()
-      if (!runner.current) return
-      runner.current.enabled = false
-
-      if (autoStart) startEngine()
-    }, [updateElements, debug, autoStart])
-
-    const clearRenderer = useCallback(() => {
-      if (frameId.current) cancelAnimationFrame(frameId.current)
-      if (mouseConstraint.current) World.remove(engine.current.world, mouseConstraint.current)
-      if (render.current) {
-        Mouse.clearSourceEvents(render.current.mouse)
-        Render.stop(render.current)
-        render.current.canvas.remove()
-      }
-      if (runner.current) Runner.stop(runner.current)
-      if (engine.current) {
-        World.clear(engine.current.world, false)
-        Engine.clear(engine.current)
-      }
-      bodiesMap.current.clear()
-    }, [])
-
-    const handleResize = useCallback(() => {
-      if (!canvas.current || !resetOnResize) return
-      setCanvasSize({ width: canvas.current.offsetWidth, height: canvas.current.offsetHeight })
-      clearRenderer()
-      initializeRenderer()
-    }, [clearRenderer, initializeRenderer, resetOnResize])
-
-    const startEngine = useCallback(() => {
-      if (runner.current) Runner.run(runner.current, engine.current)
-      if (render.current) Render.run(render.current)
-      frameId.current = requestAnimationFrame(updateElements)
-      isRunning.current = true
-    }, [updateElements])
-
-    const stopEngine = useCallback(() => {
-      if (!isRunning.current) return
-      if (runner.current) Runner.stop(runner.current)
-      if (render.current) Render.stop(render.current)
-      if (frameId.current) cancelAnimationFrame(frameId.current)
-      isRunning.current = false
-    }, [])
-
-    const reset = useCallback(() => {
-      stopEngine()
-      bodiesMap.current.forEach(({ element, body, props }) => {
-        body.angle = props.angle || 0
-        body.position.x = calculatePosition(props.x, canvasSize.width, element.offsetWidth)
-        body.position.y = calculatePosition(props.y, canvasSize.height, element.offsetHeight)
-      })
-      updateElements()
-      handleResize()
-    }, [canvasSize.width, canvasSize.height, updateElements, handleResize])
-
-    useImperativeHandle(ref, () => ({ start: startEngine, stop: stopEngine, reset }), [
-      startEngine,
-      stopEngine,
-      reset,
-    ])
-
-    useEffect(() => {
-      if (!resetOnResize) return
-      const debouncedResize = debounce(handleResize, 500)
-      window.addEventListener("resize", debouncedResize)
-      return () => {
-        window.removeEventListener("resize", debouncedResize)
-        debouncedResize.cancel()
-      }
-    }, [handleResize, resetOnResize])
-
-    useEffect(() => {
-      initializeRenderer()
-      return clearRenderer
-    }, [initializeRenderer, clearRenderer])
-
-    return (
-      <GravityContext.Provider value={{ registerElement, unregisterElement }}>
-        <div
-          ref={canvas}
-          className={cn(className, "absolute top-0 left-0 w-full h-full")}
-          {...props}
+      <div className="relative flex h-full w-full max-w-4xl items-center justify-center">
+        {/* left phone */}
+        <motion.div
+        // @ts-ignore
+          variants={side("left")}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="absolute w-[280px] md:w-[320px] lg:w-[360px] z-10"
         >
-          {children}
-        </div>
-      </GravityContext.Provider>
-    )
-  }
-)
+          <Iphone15Pro src={imageLeftSrc} alt={imageLeftAlt} />
+        </motion.div>
 
-Gravity.displayName = "Gravity"
-export default Gravity
+        {/* center phone */}
+        <motion.div
+                // @ts-ignore
+
+          variants={centerVariant}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="relative w-[300px] md:w-[340px] lg:w-[380px] z-20"
+        >
+          <Iphone15Pro src={imageCenterSrc} alt={imageCenterAlt} />
+        </motion.div>
+
+        {/* right phone */}
+        <motion.div
+                // @ts-ignore
+
+          variants={side("right")}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="absolute w-[280px] md:w-[320px] lg:w-[360px] z-10"
+        >
+          <Iphone15Pro src={imageRightSrc} alt={imageRightAlt} />
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
+export default TriplePhoneHero;
