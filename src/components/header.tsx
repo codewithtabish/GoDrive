@@ -6,6 +6,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MobileNav } from "@/components/mobile-nav";
 import { ModeToggle } from "./general/mode-toggle";
+import Image from "next/image";
 
 // Updated navigation links
 export const navLinks = [
@@ -37,7 +38,16 @@ export function Header() {
 				)}
 			>
 				<a className="rounded-md p-2 hover:bg-accent" href="#">
-					<Logo className="h-4.5" />
+				  <Image
+    src="/elogo.jpeg"
+    alt="EuroDrive Logo"
+    width={60}       // adjust size as needed
+    height={60}      // adjust size as needed
+    className="rounded-full"
+    priority
+  />
+
+					{/* <Logo className="h-4.5" /> */}
 				</a>
 				<div className="hidden items-center gap-1 md:flex">
 					{navLinks.map((link, i) => (

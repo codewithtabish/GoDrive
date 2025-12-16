@@ -1,16 +1,22 @@
 import Link from 'next/link'
+                                      import { Phone } from "lucide-react";
+
 
 const members = [
     {
-        name: 'Liam Brown',
+        name: 'MUHAMMAD ALI',
         role: 'Founder - CEO',
-        avatar: 'https://alt.tailus.io/images/team/member-one.webp',
+        avatar: '/uceo2.jpeg',
+                phone:"+92 347 9000 919",
+
         link: '#',
     },
     {
         name: 'Elijah Jones',
         role: 'Co-Founder - CTO',
         avatar: 'https://alt.tailus.io/images/team/member-two.webp',
+                phone:"+9612-3834874",
+
         link: '#',
     },
     {
@@ -23,18 +29,23 @@ const members = [
         name: 'Henry Lee',
         role: 'UX Engeneer',
         avatar: 'https://alt.tailus.io/images/team/member-four.webp',
+                phone:"+9612-3834874",
+
         link: '#',
     },
     {
         name: 'Ava Williams',
         role: 'Interaction Designer',
         avatar: 'https://alt.tailus.io/images/team/member-five.webp',
+                phone:"+9612-3834874",
+
         link: '#',
     },
     {
         name: 'Olivia Miller',
         role: 'Visual Designer',
         avatar: 'https://alt.tailus.io/images/team/member-six.webp',
+        phone:"+9612-3834874",
         link: '#',
     },
 ]
@@ -72,12 +83,18 @@ export default function TeamSection() {
                                     </div>
                                     <div className="mt-1 flex items-center justify-between">
                                         <span className="text-muted-foreground inline-block translate-y-6 text-sm opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">{member.role}</span>
-                                        <Link
+
+<div className="flex items-center space-x-2">
+  <Phone className="w-6 h-6 text-blue-500" /> {/* phone icon */}
+  <span className="text-sm font-medium">{member.phone}</span> {/* phone number */}
+</div>
+
+                                        {/* <Link
                                             href={member.link}
                                             className="group-hover:text-primary-600 dark:group-hover:text-primary-400 inline-block translate-y-8 text-sm tracking-wide opacity-0 transition-all duration-500 hover:underline group-hover:translate-y-0 group-hover:opacity-100">
                                             {' '}
                                             Linktree
-                                        </Link>
+                                        </Link> */}
                                     </div>
                                 </div>
                             </div>

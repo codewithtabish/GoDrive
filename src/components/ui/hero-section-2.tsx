@@ -239,9 +239,9 @@ export function HeroSection2() {
 
       <TriplePhoneHero
             // @ts-ignore
-  imageLeftSrc={'/one.png'}
-        imageCenterSrc={'/two.png'}
-        imageRightSrc={'/three.png'}
+  imageLeftSrc={'/eone.jpg'}
+        imageCenterSrc={'/etwo.jpg'}
+        imageRightSrc={'/ethree.jpg'}
       />
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white dark:from-[#212121] to-transparent z-40" />

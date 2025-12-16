@@ -1,6 +1,7 @@
 import { Logo } from '@/components/logo'
 import Link from 'next/link'
 import { ModeToggle } from './general/mode-toggle'
+import Image from 'next/image'
 
 const links = [
     {
@@ -37,7 +38,16 @@ export default function FooterSection() {
                     href="/"
                     aria-label="go home"
                     className="mx-auto block size-fit">
-                    <Logo />
+                        
+                                          <Image
+                            src="/elogo.jpeg"
+                            alt="EuroDrive Logo"
+                            width={60}       // adjust size as needed
+                            height={60}      // adjust size as needed
+                            className="rounded-full"
+                            priority
+                          />
+                    {/* <Logo /> */}
                 </Link>
 
                 <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
